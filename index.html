@@ -388,6 +388,43 @@ h2.title em{font-style:normal;color:var(--violet)}
 .promo-item small{font-size:13px;font-weight:700;color:var(--ink-soft)}
 .price-note{text-align:center;margin-top:22px;font-size:13px;font-weight:700;color:var(--ink-soft);max-width:760px;margin-inline:auto}
 
+/* ---------- ADMIN ---------- */
+.admin-open{background:none;border:0;color:inherit;font:inherit;font-size:12px;font-weight:700;opacity:.65;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.admin-open:hover{opacity:1}
+.admin-overlay{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:18px;background:rgba(20,11,48,.62);backdrop-filter:blur(6px)}
+.admin-overlay[hidden],#adminLogin[hidden],#adminPanel[hidden]{display:none!important}
+.admin-modal{position:relative;width:min(920px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:26px;padding:30px;box-shadow:0 30px 80px rgba(24,10,60,.35)}
+.admin-close{position:absolute;top:16px;right:18px;width:36px;height:36px;border:0;border-radius:50%;background:#f2ecff;color:var(--violet);font-size:24px;line-height:1;cursor:pointer}
+.admin-modal h2{font-family:'Fredoka',sans-serif;font-size:28px;font-weight:600;margin-bottom:8px}
+.admin-modal p{font-size:14px;font-weight:600;color:var(--ink-soft)}
+.admin-login-form{display:flex;flex-direction:column;gap:12px;max-width:380px;margin-top:22px}
+.admin-login-form input,.admin-field input,.admin-field textarea{border:2px solid #e8defc;border-radius:12px;font:inherit;font-size:14px;font-weight:600;color:var(--ink);background:#fff}
+.admin-login-form input{padding:13px 14px}
+.admin-field input{padding:11px 13px}
+.admin-field textarea{padding:11px 13px;line-height:1.45;resize:vertical}
+.admin-login-form input:focus,.admin-field input:focus,.admin-field textarea:focus{outline:none;border-color:var(--violet)}
+.admin-error{color:#e11d48!important;min-height:18px;font-size:13px!important}
+.admin-hint{margin-bottom:18px;padding:12px 14px;border-radius:12px;background:#fff4e6;font-size:13px!important}
+.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.admin-tab{border:2px solid #e8defc;background:#fff;color:var(--ink-soft);font:inherit;font-size:14px;font-weight:800;padding:8px 16px;border-radius:999px;cursor:pointer}
+.admin-tab.active{background:var(--violet);border-color:var(--violet);color:#fff}
+.admin-item{border:2px solid #eee6fb;border-radius:18px;padding:18px;margin-bottom:14px;background:#fcfaff}
+.admin-item-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.admin-item-head b{font-family:'Fredoka',sans-serif;font-size:18px;font-weight:600}
+.admin-actions-small{display:flex;gap:6px;flex-wrap:wrap}
+.admin-mini{border:1px solid #ddd2f5;background:#fff;color:var(--violet);border-radius:9px;padding:5px 10px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.admin-mini.danger{color:#e11d48;border-color:#fecdd3}
+.admin-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.admin-field{display:flex;flex-direction:column;gap:5px}
+.admin-field.full{grid-column:1/-1}
+.admin-field label{font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.03em}
+.admin-check{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800}
+.admin-check input{width:18px;height:18px;accent-color:var(--violet)}
+.admin-bottom{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px;padding-top:18px;border-top:1px solid #eee6fb}
+.admin-toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);z-index:10001;background:var(--violet);color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;font-weight:800;opacity:0;pointer-events:none;transition:.25s;box-shadow:var(--shadow)}
+.admin-toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:620px){.admin-modal{padding:22px 16px;border-radius:20px}.admin-fields{grid-template-columns:1fr}.admin-modal h2{font-size:24px}}
+
 /* ---------- FAQ ---------- */
 .faq{background:#fff}
 .faq-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:60px}
@@ -967,11 +1004,43 @@ details p{padding:0 20px 20px 0;color:var(--ink-soft);font-weight:600;font-size:
         </div>
       </div>
     </div>
-    <div class="footer-bottom"><span>© 2026 «Империя Интеллекта». Все права защищены.</span><span>Сделано с заботой о детях 💛</span></div>
+    <div class="footer-bottom"><span>© 2026 «Империя Интеллекта». Все права защищены.</span><span>Сделано с заботой о детях 💛 <button class="admin-open" id="adminOpen" type="button">Админ</button></span></div>
   </div>
 </footer>
 
 <button class="to-top" id="toTop" aria-label="Наверх"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+
+<!-- ===== LOCAL ADMIN ===== -->
+<div class="admin-overlay" id="adminOverlay" hidden>
+  <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <button class="admin-close" id="adminClose" type="button" aria-label="Закрыть">×</button>
+    <div id="adminLogin">
+      <h2 id="adminTitle">Вход для администратора</h2>
+      <p>Правки новостей и цен сохраняются только в этом браузере и видны только вам.</p>
+      <div class="admin-login-form">
+        <input type="password" id="adminPass" placeholder="Пароль" autocomplete="current-password" aria-label="Пароль администратора">
+        <button class="btn" id="adminLoginBtn" type="button">Войти</button>
+        <p class="admin-error" id="adminError" role="alert"></p>
+      </div>
+    </div>
+    <div id="adminPanel" hidden>
+      <h2>Редактирование сайта</h2>
+      <p class="admin-hint">Изменения сохраняются в локальном хранилище браузера и не видны остальным посетителям. Для публикации правок нужно менять файл в репозитории.</p>
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="news" type="button">Новости</button>
+        <button class="admin-tab" data-tab="prices" type="button">Цены</button>
+        <button class="admin-tab" data-tab="promos" type="button">Акции</button>
+      </div>
+      <div id="adminEditor"></div>
+      <div class="admin-bottom">
+        <button class="btn" id="adminSave" type="button">Сохранить</button>
+        <button class="btn btn-outline" id="adminReset" type="button">Сбросить</button>
+        <button class="btn btn-outline" id="adminLogout" type="button">Выйти</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
 
 <script>
 (function(){
@@ -1071,6 +1140,184 @@ details p{padding:0 20px 20px 0;color:var(--ink-soft);font-weight:600;font-size:
   document.getElementById('resetForm').addEventListener('click', function(){
     form.reset();
     formCard.classList.remove('form-sent');
+  });
+
+  // ---------- Local admin: editable news, prices and promos ----------
+  var ADMIN_KEY = 'ii_admin_content_v1';
+  var ADMIN_PASSWORD = 'admin123';
+  var DEFAULT_CONTENT = {
+    news: [
+      {tag:'Акция',tagClass:'promo',date:'до 23.11.2026',title:'«Своих не бросаем!» — акция продлена',text:'Открыли ещё 5 тёплых мест со скидкой 20% для новых учеников. Скидка одна на ребёнка и не суммируется с другими акциями.',link:'https://vk.ru/ii_isma_samara',linkText:'Подробнее в ВК'},
+      {tag:'Событие',tagClass:'event',date:'14 ноября',title:'Рабочая суббота с пользой',text:'Приглашали детей и родителей на занятия и консультации с 9:00 до 13:30. Общались, отвечали на вопросы и провели субботу с пользой.',link:'https://vk.ru/ii_isma_samara',linkText:'Подробнее в ВК'},
+      {tag:'Статья',tagClass:'article',date:'ноябрь 2026',title:'Мотивация — это фундамент!',text:'Почему игра важнее «надо»: интерес — топливо обучения, а радость помогает запоминать быстрее. Именно так мы строим занятия в центре.',link:'https://vk.ru/ii_isma_samara',linkText:'Подробнее в ВК'},
+      {tag:'Статья',tagClass:'article',date:'ноябрь 2026',title:'Помогите детям',text:'Размышление руководителя центра о работе над ошибками: двойка без объяснения не учит. Важно разобрать, где именно ребёнок запутался, и поддержать его.',link:'https://vk.ru/ii_isma_samara',linkText:'Подробнее в ВК'},
+      {tag:'Конкурс',tagClass:'event',date:'ноябрь 2026',title:'Конкурс стартовал!',text:'Следите за новостями в нашей группе: условия, задания и результаты конкурса публикуем там. Участвуйте вместе с детьми!',link:'https://vk.ru/ii_isma_samara',linkText:'Подробнее в ВК'},
+      {tag:'Новое',tagClass:'',date:'ноябрь 2026',title:'Итак, мы начинаем!',text:'Делимся первыми новостями, знакомимся с вами и приглашаем в семью «Империи Интеллекта». Впереди много интересного!',link:'https://vk.ru/ii_isma_samara',linkText:'Подробнее в ВК'}
+    ],
+    prices: [
+      {emoji:'🎒',title:'Подготовка к школе',desc:'Курс из 10 занятий для будущих первоклассников.',value:'1 400',unit:'₽ / занятие',features:['Привыкаем к школьному ритму','Развиваем внимание и моторику','Играем и учимся с радостью'],btn:'Выбрать программу',btnClass:'btn-outline',link:'#contact',badge:'',featured:false},
+      {emoji:'📖',title:'Обучение чтению с нуля',desc:'От первых букв до уверенного, осознанного чтения.',value:'1 500',unit:'₽ / занятие',features:['Слоги, слова, первые предложения','Любовь к книгам вместо зубрёжки','Переход к скорочтению'],btn:'Записаться',btnClass:'',link:'#contact',badge:'Выбирают чаще всего',featured:true},
+      {emoji:'🧮',title:'Ментальная арифметика',desc:'Считаем в уме, развиваем память и концентрацию.',value:'1 700',unit:'₽ / занятие',features:['Работа с абакусом','Скорость счёта и внимание','Уверенность в своих силах'],btn:'Выбрать программу',btnClass:'btn-outline',link:'#contact',badge:'',featured:false}
+    ],
+    promos: [
+      {emoji:'🎁',title:'Первое занятие — бесплатно',desc:'Пробный урок длится 45 минут, без обязательств'},
+      {emoji:'💛',title:'Скидка 20% новым ученикам',desc:'По акции «Своих не бросаем», заявки до 23.11.2026'}
+    ]
+  };
+  function cloneAdmin(o){ return JSON.parse(JSON.stringify(o)); }
+  function escAdmin(v){ return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function safeAdminUrl(u){ u=String(u||'').trim(); return /^(https?:\/\/|mailto:|tel:|\/|#)/i.test(u)?u:'#'; }
+  function loadAdminContent(){
+    try{
+      var raw=localStorage.getItem(ADMIN_KEY);
+      if(raw){ var d=JSON.parse(raw); if(d&&Array.isArray(d.news)&&Array.isArray(d.prices)&&Array.isArray(d.promos)) return d; }
+    }catch(e){}
+    return cloneAdmin(DEFAULT_CONTENT);
+  }
+  var adminContent=loadAdminContent();
+  var adminWorking=cloneAdmin(adminContent);
+  function renderNewsAdmin(){
+    var grid=document.querySelector('.news-grid'); if(!grid)return;
+    grid.innerHTML=adminContent.news.map(function(n){
+      return '<article class="news-card reveal in">'+
+        '<div class="news-meta"><span class="news-tag '+escAdmin(n.tagClass||'')+'">'+escAdmin(n.tag)+'</span><span class="news-date">'+escAdmin(n.date)+'</span></div>'+
+        '<h3>'+escAdmin(n.title)+'</h3><p>'+escAdmin(n.text)+'</p>'+
+        '<a class="news-link" href="'+escAdmin(safeAdminUrl(n.link))+'" target="_blank" rel="noopener">'+escAdmin(n.linkText||'Подробнее')+' <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></article>';
+    }).join('');
+  }
+  function renderPricesAdmin(){
+    var grid=document.querySelector('.price-grid'); if(!grid)return;
+    grid.innerHTML=adminContent.prices.map(function(p){
+      var badge=p.badge?'<span class="price-badge">'+escAdmin(p.badge)+'</span>':'';
+      var feats=(p.features||[]).map(function(f){return '<li><span class="check-circle"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span> '+escAdmin(f)+'</li>';}).join('');
+      var arrow=/^#/.test(p.link||'')?'':' <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+      return '<article class="price-card '+(p.featured?'featured ':'')+'reveal in">'+badge+
+        '<div class="price-emoji">'+escAdmin(p.emoji)+'</div><h3>'+escAdmin(p.title)+'</h3><p>'+escAdmin(p.desc)+'</p>'+
+        '<div class="price-value"><b>'+escAdmin(p.value)+'</b><span>'+escAdmin(p.unit)+'</span></div>'+
+        '<ul class="price-list">'+feats+'</ul>'+
+        '<a href="'+escAdmin(safeAdminUrl(p.link))+'" class="btn '+(p.btnClass==='btn-outline'?'btn-outline':'')+'">'+escAdmin(p.btn)+arrow+'</a></article>';
+    }).join('');
+    var strip=document.querySelector('.promo-strip');
+    if(strip) strip.innerHTML=adminContent.promos.map(function(p){
+      return '<div class="promo-item"><span class="pi-emoji">'+escAdmin(p.emoji)+'</span><div><strong>'+escAdmin(p.title)+'</strong><small>'+escAdmin(p.desc)+'</small></div></div>';
+    }).join('');
+  }
+  function renderSiteAdmin(){ renderNewsAdmin(); renderPricesAdmin(); }
+  renderSiteAdmin();
+
+  var adminOverlay=document.getElementById('adminOverlay');
+  var adminLogin=document.getElementById('adminLogin');
+  var adminPanel=document.getElementById('adminPanel');
+  var adminPass=document.getElementById('adminPass');
+  var adminErr=document.getElementById('adminError');
+  var adminEditor=document.getElementById('adminEditor');
+  var adminTab='news';
+  function adminToast(msg){
+    var t=document.getElementById('adminToast');
+    t.textContent=msg; t.classList.add('show');
+    clearTimeout(adminToast.timer);
+    adminToast.timer=setTimeout(function(){ t.classList.remove('show'); },2400);
+  }
+  function openAdmin(){ adminOverlay.hidden=false; adminLogin.hidden=false; adminPanel.hidden=true; adminPass.value=''; adminErr.textContent=''; adminPass.focus(); }
+  function closeAdmin(){ adminOverlay.hidden=true; }
+  function loginAdmin(){
+    if(adminPass.value===ADMIN_PASSWORD){ adminLogin.hidden=true; adminPanel.hidden=false; adminWorking=cloneAdmin(adminContent); renderAdminEditor(); }
+    else { adminErr.textContent='Неверный пароль'; adminPass.select(); }
+  }
+  function adminField(group,i,key,label,val,type,full){
+    var cls='admin-field'+(full?' full':'');
+    if(type==='textarea') return '<div class="'+cls+'"><label>'+escAdmin(label)+'</label><textarea data-field="'+key+'">'+escAdmin(val)+'</textarea></div>';
+    return '<div class="'+cls+'"><label>'+escAdmin(label)+'</label><input type="'+(type||'text')+'" data-field="'+key+'" value="'+escAdmin(val)+'"></div>';
+  }
+  function renderAdminEditor(){
+    document.querySelectorAll('.admin-tab').forEach(function(b){ b.classList.toggle('active',b.getAttribute('data-tab')===adminTab); });
+    var arr=adminWorking[adminTab], html='';
+    arr.forEach(function(item,i){
+      html+='<div class="admin-item" data-group="'+adminTab+'" data-index="'+i+'">'+
+        '<div class="admin-item-head"><b>'+escAdmin(item.title||('Новый элемент '+(i+1)))+' #'+(i+1)+'</b>'+
+        '<div class="admin-actions-small">'+
+        '<button type="button" class="admin-mini" data-action="up" data-index="'+i+'" aria-label="Выше">↑</button>'+
+        '<button type="button" class="admin-mini" data-action="down" data-index="'+i+'" aria-label="Ниже">↓</button>'+
+        '<button type="button" class="admin-mini danger" data-action="delete" data-index="'+i+'">Удалить</button></div></div><div class="admin-fields">';
+      if(adminTab==='news'){
+        html+=adminField(adminTab,i,'tag','Метка',item.tag)+
+          adminField(adminTab,i,'tagClass','Стиль метки (promo / event / article)',item.tagClass)+
+          adminField(adminTab,i,'date','Дата',item.date)+
+          adminField(adminTab,i,'linkText','Текст ссылки',item.linkText)+
+          adminField(adminTab,i,'title','Заголовок',item.title,'text',true)+
+          adminField(adminTab,i,'text','Текст',item.text,'textarea',true)+
+          adminField(adminTab,i,'link','Ссылка',item.link,'text',true);
+      }else if(adminTab==='prices'){
+        html+=adminField(adminTab,i,'emoji','Эмодзи',item.emoji)+
+          adminField(adminTab,i,'value','Цена',item.value)+
+          adminField(adminTab,i,'unit','Единица (₽ / занятие)',item.unit)+
+          adminField(adminTab,i,'btn','Текст кнопки',item.btn)+
+          adminField(adminTab,i,'btnClass','Класс кнопки (btn-outline или пусто)',item.btnClass)+
+          adminField(adminTab,i,'link','Ссылка кнопки',item.link)+
+          adminField(adminTab,i,'badge','Плашка (пусто = нет)',item.badge)+
+          adminField(adminTab,i,'title','Название',item.title,'text',true)+
+          adminField(adminTab,i,'desc','Описание',item.desc,'text',true)+
+          adminField(adminTab,i,'features','Преимущества — по строке',(item.features||[]).join('\n'),'textarea',true)+
+          '<div class="admin-field full"><label class="admin-check"><input type="checkbox" data-field="featured" '+(item.featured?'checked':'')+'> Выделенная карточка</label></div>';
+      }else{
+        html+=adminField(adminTab,i,'emoji','Эмодзи',item.emoji)+
+          adminField(adminTab,i,'title','Заголовок',item.title)+
+          adminField(adminTab,i,'desc','Описание',item.desc,'text',true);
+      }
+      html+='</div></div>';
+    });
+    html+='<button type="button" class="btn btn-outline" data-action="add">+ Добавить '+({news:'новость',prices:'программу',promos:'акцию'}[adminTab])+'</button>';
+    adminEditor.innerHTML=html;
+  }
+  adminEditor.addEventListener('input',function(e){
+    var f=e.target.getAttribute('data-field'); if(!f)return;
+    var item=e.target.closest('.admin-item'); if(!item)return;
+    var g=item.getAttribute('data-group'), idx=parseInt(item.getAttribute('data-index'),10);
+    var val=e.target.type==='checkbox'?e.target.checked:e.target.value;
+    if(f==='features') val=val.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+    adminWorking[g][idx][f]=val;
+  });
+  adminEditor.addEventListener('click',function(e){
+    var b=e.target.closest('[data-action]'); if(!b)return;
+    var action=b.getAttribute('data-action'), arr=adminWorking[adminTab];
+    if(action==='add'){
+      if(adminTab==='news') arr.push({tag:'Новое',tagClass:'',date:'',title:'Новая новость',text:'',link:'https://vk.ru/ii_isma_samara',linkText:'Подробнее в ВК'});
+      else if(adminTab==='prices') arr.push({emoji:'⭐',title:'Новая программа',desc:'',value:'0',unit:'₽ / занятие',features:['Новое преимущество'],btn:'Записаться',btnClass:'btn-outline',link:'#contact',badge:'',featured:false});
+      else arr.push({emoji:'🎁',title:'Новая акция',desc:''});
+    }else{
+      var i=parseInt(b.getAttribute('data-index'),10);
+      if(action==='delete') arr.splice(i,1);
+      else if(action==='up'&&i>0){ var a=arr[i-1]; arr[i-1]=arr[i]; arr[i]=a; }
+      else if(action==='down'&&i<arr.length-1){ var a=arr[i+1]; arr[i+1]=arr[i]; arr[i]=a; }
+    }
+    renderAdminEditor();
+  });
+  document.getElementById('adminOpen').addEventListener('click',openAdmin);
+  document.getElementById('adminClose').addEventListener('click',closeAdmin);
+  adminOverlay.addEventListener('click',function(e){ if(e.target===adminOverlay) closeAdmin(); });
+  document.getElementById('adminLoginBtn').addEventListener('click',loginAdmin);
+  adminPass.addEventListener('keydown',function(e){ if(e.key==='Enter') loginAdmin(); });
+  document.querySelectorAll('.admin-tab').forEach(function(b){
+    b.addEventListener('click',function(){ adminTab=b.getAttribute('data-tab'); renderAdminEditor(); });
+  });
+  document.getElementById('adminSave').addEventListener('click',function(){
+    adminContent=cloneAdmin(adminWorking);
+    try{ localStorage.setItem(ADMIN_KEY,JSON.stringify(adminContent)); }
+    catch(err){ adminToast('Ошибка сохранения: '+err.message); return; }
+    renderSiteAdmin(); adminToast('Сохранено в этом браузере');
+  });
+  document.getElementById('adminReset').addEventListener('click',function(){
+    if(!window.confirm('Вернуть исходные новости, цены и акции?')) return;
+    try{ localStorage.removeItem(ADMIN_KEY); }catch(err){}
+    adminContent=cloneAdmin(DEFAULT_CONTENT); adminWorking=cloneAdmin(adminContent);
+    renderSiteAdmin(); renderAdminEditor(); adminToast('Исходное содержимое восстановлено');
+  });
+  document.getElementById('adminLogout').addEventListener('click',function(){
+    adminPanel.hidden=true; adminLogin.hidden=false; adminPass.value=''; adminErr.textContent='';
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.ctrlKey&&e.shiftKey&&(e.key==='A'||e.key==='a')){ e.preventDefault(); openAdmin(); }
+    if(e.key==='Escape'&&!adminOverlay.hidden) closeAdmin();
   });
 })();
 </script>
